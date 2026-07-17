@@ -55,7 +55,7 @@ def find_vosk_model_path() -> str:
     Uses audio_cfg.VOSK_FALLBACK_MODEL_PATHS.
     """
 
-    paths = getattr(config, "VOSK_FALLBACK_MODEL_PATHS", [])
+    paths = getattr(audio_cfg, "VOSK_FALLBACK_MODEL_PATHS", [])
 
     for path in paths:
         if not path:
@@ -95,7 +95,7 @@ def load_vosk_model(force_reload: bool = False) -> Model:
     if not model_path:
         searched = "\n".join(
             f"  - {os.path.abspath(os.path.expanduser(p))}"
-            for p in getattr(config, "VOSK_FALLBACK_MODEL_PATHS", [])
+            for p in getattr(audio_cfg, "VOSK_FALLBACK_MODEL_PATHS", [])
         )
 
         raise FileNotFoundError(
@@ -249,7 +249,7 @@ def record_and_transcribe(
     def callback(indata, frames, time_info, status) -> None:
         if status:
             # Do not spam too much; useful during debugging.
-            if getattr(config, "DEBUG_MODE", False):
+            if getattr(audio_cfg, "DEBUG_MODE", False):
                 print("Input status:", status)
 
         audio_queue.put(bytes(indata))
@@ -393,7 +393,7 @@ def clean_for_speech(text: str) -> str:
     t = re.sub(r"\s+", " ", t).strip()
 
     # Limit length for TTS safety.
-    max_len = int(getattr(config, "MAX_BOT_TEXT_LENGTH", 1200))
+    max_len = int(getattr(audio_cfg, "MAX_BOT_TEXT_LENGTH", 1200))
 
     if max_len > 0 and len(t) > max_len:
         t = t[:max_len].rsplit(" ", 1)[0].strip()
@@ -410,7 +410,7 @@ def clean_user_text(text: str) -> str:
     t = text or ""
     t = re.sub(r"\s+", " ", t).strip()
 
-    max_len = int(getattr(config, "MAX_USER_TEXT_LENGTH", 500))
+    max_len = int(getattr(audio_cfg, "MAX_USER_TEXT_LENGTH", 500))
 
     if max_len > 0 and len(t) > max_len:
         t = t[:max_len].rsplit(" ", 1)[0].strip()
@@ -426,7 +426,7 @@ def get_speech_diagnostics() -> str:
     lines: list[str] = []
 
     lines.append("========== SPEECH DIAGNOSTICS ==========")
-    lines.append(f"VOSK_MODEL_PATH={getattr(config, 'VOSK_MODEL_PATH', '')}")
+    lines.append(f"VOSK_MODEL_PATH={getattr(audio_cfg, 'VOSK_MODEL_PATH', '')}")
     lines.append(f"runtime.vosk_model_path={runtime.vosk_model_path}")
     lines.append(f"speech_ready={is_speech_ready()}")
     lines.append(f"mic_device_index={runtime.mic_device_index}")
@@ -435,7 +435,7 @@ def get_speech_diagnostics() -> str:
     lines.append(f"last_transcript={runtime.last_transcript}")
     lines.append("Fallback model paths:")
 
-    for p in getattr(config, "VOSK_FALLBACK_MODEL_PATHS", []):
+    for p in getattr(audio_cfg, "VOSK_FALLBACK_MODEL_PATHS", []):
         expanded = os.path.abspath(os.path.expanduser(p))
         exists = os.path.isdir(expanded)
         lines.append(f"  {'yes' if exists else ' no'}  {expanded}")

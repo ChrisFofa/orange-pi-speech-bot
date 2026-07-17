@@ -62,7 +62,6 @@ Quick tour of its sections:
 | `audio_utils.py` | ALSA/USB audio setup helpers | No |
 | `config.py`, `event_runtime.py`, `supabase_helper.py`, `device_utils.py` | Supabase key-fetch plumbing (shared Big Bang pattern) | No |
 | `event.json` | Per-event status text + extra persona | Per event |
-| `Spring6_working/` | Frozen backup of the pre-cleanup version | Archive |
 
 **Security rule:** the Poe API key comes from Supabase RPC `get_event_api_key`
 at runtime and lives in memory only. Never hardcode or commit keys.
@@ -132,7 +131,8 @@ instantly and the counter resets. Keep this working through all changes.
 ### 🔜 Next
 - [ ] Test on the Orange Pi with real hardware; set `DEBUG_MODE = True`
       and record real timings here
-- [ ] Decide on `Spring6_working/` (keep as frozen backup or archive it)
+- [x] ~~Decide on `Spring6_working/`~~ — **deleted 2026-07-18**; the
+      cleaned-up code is the only version going forward
 - [ ] Create GitHub repo and push (see session log)
 
 ### 💡 Later / ideas
@@ -150,5 +150,6 @@ instantly and the counter resets. Keep this working through all changes.
 |---|---|
 | 2026-07-17 | Project reviewed. Latency problem diagnosed (~6–10 s dead air). 4-step streaming plan proposed. Working rules agreed: plan → confirm → build; GitHub repo + regular push/pull; this README as handover. |
 | 2026-07-17 | **Build day 1 (approved):** full cleanup + `bot_config.py` single user file; keep-alive + warm-up; streaming LLM → sentence-TTS pipeline; phrase pre-caching; Vosk endpointing; reply caps. Found + fixed a sentence-splitter edge bug via unit tests. All files compile; logic tests pass on PC. **Next: test on the Pi, then set up GitHub repo.** |
+| 2026-07-18 | **Review + fix day (approved):** full code review before Pi testing. Found + fixed a **critical** leftover from the config-alias rename: `speech_utils.py` used bare `config` (never imported) in 7 spots → `NameError` at startup → "Setup error" screen on the Pi. Also fixed: face stuck on "talking" after the calm-down message; idle→sleep timer not restarting after turn errors (setup-error screen stays up on purpose). Noted stale docs, no runtime impact: `event.json`/`manifest.json` still say ElevenLabs/Lily (actual: Sonic-3.0/tessa), `run.sh` log still named `spring5_launch.log`. All files compile. **Next: test on the Pi with `DEBUG_MODE = True` and record real timings.** |
 
 _(Add a row every work session — date, what changed, what's next.)_

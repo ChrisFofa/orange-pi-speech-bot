@@ -432,6 +432,7 @@ class SpringDemoScreen(QWidget):
                     self.signals.status.emit(self.status_text["redirect"])
                     self._speak_safely(cfg.CALMDOWN_TEXT)
                     self.bad_attempts = 0
+                    self.signals.state.emit("idle")
                     self.signals.finished_turn.emit()
                     return
                 # Soft redirect: ask the model to redirect without echoing.
@@ -683,6 +684,11 @@ class SpringDemoScreen(QWidget):
         if bc.DEBUG_MODE and msg:
             print(f"[error] {kind}: {msg}")
         self.is_busy = False
+        # Restart the idle->sleep timer after a TURN error (it was stopped
+        # at turn start). Skip for setup_error: that screen must stay up
+        # so a teacher sees it instead of the face falling asleep.
+        if kind != "setup_error":
+            self.idle_timer.start(cfg.IDLE_TO_SLEEP_SECONDS * 1000)
 
     def _set_face_state(self, state: str):
         try:
