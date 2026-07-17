@@ -1,0 +1,15 @@
+# --- Secrets: NEVER commit these ---
+.env
+*.env
+
+# --- Big speech model folder (download on the Pi instead) ---
+vosk-model-small-en-us-0.15/
+models/
+
+# --- Python cache ---
+__pycache__/
+*.pyc
+
+# --- OS junk ---
+Thumbs.db
+.DS_Store

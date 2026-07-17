@@ -1,0 +1,18 @@
+# ============================================================
+# Spring Demo — Python requirements
+# ============================================================
+#
+# Most heavy ARM64 wheels (PyQt5, numpy) come from the system
+# site-packages because setup.sh creates the venv with
+# --system-site-packages. Anything pure-Python or Pi-friendly
+# we install via pip below.
+# ============================================================
+
+requests>=2.31.0
+python-dotenv>=1.0.0
+
+# Audio
+sounddevice>=0.4.6
+
+# Speech-to-text (offline)
+vosk>=0.3.45
